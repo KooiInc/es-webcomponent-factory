@@ -1,9 +1,11 @@
 import { logFactory, $ } from "./sbHelpers.bundled.js";
-import { default as CreateComponent, reporter} from "./WebComponentFactory.js";
+import { default as CreateComponent, reporter} from "../Bundle/WebComponentFactory.min.js";
 const { log: print } = logFactory();
 window.$ = $;
 stylePage();
+console.log(`WTF`);
 demo();
+
 
 function demo() {
   addLogButtons();
