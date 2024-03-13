@@ -81,8 +81,9 @@ function initializeComponentLifecycle(Super, specs) {
     attributeChangedCallback(attributeName, oldValue, newValue) {
       if (!observedAttributes.length) { return; }
       if ( observedAttributes.find(attr => attr === attributeName) ) {
-        return attrChangedMethod(this, attributeName, oldValue, newValue);
+        attrChangedMethod(this, attributeName, oldValue, newValue);
       }
+      return true;
     },
   };
 }
