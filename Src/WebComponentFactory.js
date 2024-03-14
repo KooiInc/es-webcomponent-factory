@@ -25,14 +25,14 @@ function createComponent( specs ) {
 function SUPER({ forElem } = {} ) {
   const ELEM = forElem;
   
-  return function CustomElementConstructor() {
-    CustomElementConstructor.prototype = ELEM.prototype;
-    enrichSuperPrototype(CustomElementConstructor);
-    return Reflect.construct( ELEM, [], CustomElementConstructor );
+  return function CustomElementCtor() {
+    CustomElementCtor.prototype = ELEM.prototype;
+    enrichSuperPrototype(CustomElementCtor);
+    return Reflect.construct( ELEM, [], CustomElementCtor );
   }
 }
 
-function enrichSuperPrototype(SuperCtor, ELEM) {
+function enrichSuperPrototype(SuperCtor) {
   if (!SuperCtor.prototype.setComponentState) {
     const stateCache = {};
     const isCustom = me => me.hasAttribute(`is`) || /-/.test(me.tagName);
