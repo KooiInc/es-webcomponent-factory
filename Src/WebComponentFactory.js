@@ -9,15 +9,15 @@ export {
 
 function createComponent( specs ) {
   specs = initializeSpecs(specs);
-  let { componentName, extendsCustom, } = specs;
+  const { componentName } = specs;
   
-  if (contracts.componentName(componentName)) {
+  if (contracts.componentName(componentName) && !customElements.get(componentName)) {
     const xtElem = specs.extends?.toLowerCase()?.trim();
     const xtElemCTOR = tagMap[xtElem] ?? HTMLElement;
     const superDuper = SUPER({ forElem: xtElemCTOR, });
     initializeComponentLifecycle(superDuper, specs);
     !reporter.clientOnly &&
-    reporter.report(`[factory] Registered component "${componentName}"`);
+      reporter.report(`[factory] Registered component "${componentName}"`);
     customElements.define( componentName, superDuper, { extends: xtElem } );
   }
 }
@@ -27,12 +27,12 @@ function SUPER({ forElem } = {} ) {
   
   return function CustomElementConstructor() {
     CustomElementConstructor.prototype = ELEM.prototype;
-    initializeSuperPrototype(CustomElementConstructor);
+    enrichSuperPrototype(CustomElementConstructor);
     return Reflect.construct( ELEM, [], CustomElementConstructor );
-  };
+  }
 }
 
-function initializeSuperPrototype(SuperCtor) {
+function enrichSuperPrototype(SuperCtor, ELEM) {
   if (!SuperCtor.prototype.setComponentState) {
     const stateCache = {};
     const isCustom = me => me.hasAttribute(`is`) || /-/.test(me.tagName);
