@@ -29,19 +29,19 @@ function demo() {
     //            ∟ onAttrChange bound by contract, so this will not work
     extends: `DIV`,
   });
-
+  
   // (dynamic) html and in the shadows
   CreateComponent({
     componentName: `expandable-text`,
     onConnect: expandableTextRenderer,
   } );
-
+  
   // slotted
   CreateComponent( {
     componentName: `copyright-slotted`,
     onConnect: copyrightRenderer,
   });
-
+  
   implement();
 }
 
@@ -59,14 +59,17 @@ function implement() {
     .appendTo(customContainer);
   
   // add copyright-slotted component (top of document)
-  const ghLink = `<a slot="backlinkgh" target="_top" href="//github.com/KooiInc/es-webcomponent-factory">GitHub</a>`;
-  const sbLink = `<a slot="backlinksb" target="_top" href="//stackblitz.com/@KooiInc">All projects</a>`;
+  const isSB = /stackblitz/i.test(location.href);
+  const ghLink = `<a target="${isSB ? `_blank` : `_top`}"
+    href="//github.com/KooiInc/es-webcomponent-factory">GitHub</a>`;
+  const sbLink = `<a target="_top" href="//stackblitz.com/@KooiInc">All projects</a>`;
   $(` <copyright-slotted>
-        <span slot="year">${
-    new Date().getFullYear()}</span>
-        ${/stackblitz/i.test(location.href)
-          ? `| ${sbLink} | ${ghLink}`
-          : `| ${ghLink}`}
+        <span slot="year">${new Date().getFullYear()}</span>
+        <span slot="links" class="regular">
+        ${isSB
+    ? `| ${sbLink} | ${ghLink}`
+    : `| ${ghLink}`}
+        </span>
       </copyright-slotted>`, customContainer, $.at.AfterBegin);
   
   // move log entries to their own container and prepend a header
@@ -84,6 +87,7 @@ function copyrightRenderer(elem) {
   shadow.innerHTML = `
     <style>
       ::slotted(span) { font-weight: bold; color: green; }
+      ::slotted(span.regular) { font-weight: normal; color: black; }
       div { margin-top: 1rem ;}
       ::slotted(a) {
         text-decoration: none;
@@ -103,9 +107,8 @@ function copyrightRenderer(elem) {
       }
     </style>
     <div>&copy;
-      <slot name="year"></slot> KooiInc |
-      <slot name="backlinksb"></slot>
-      <slot name="backlinkgh"></slot>
+      <slot name="year"></slot> KooiInc
+      <slot name="links"></slot>
     </div>`;
 }
 
@@ -119,7 +122,7 @@ function expandableTextRenderer(elem) {
     elem.setComponentState( { handler } );
     setComponentStyleFor(elem, `#expandable-text-style`);
   }
-
+  
   shadow.adoptedStyleSheets = [elem.state.styling];
   shadow.innerHTML = templateId
     ? $.node(`#${templateId}`).content.firstElementChild.innerHTML
@@ -163,15 +166,15 @@ function expandingListRenderer(elem) {
     styleExpandingListComponent(elem);
     elem.setComponentState({HandledAndStyled: true});
   }
-
+  
   [...elem.querySelectorAll(`ul ul`)].forEach((ul) => { ul.classList.add(`hidden`); });
   [...elem.querySelectorAll(`li`)].forEach( li => {
     if (li.querySelectorAll(`ul`).length > 0)  {
       li.classList.add("closed");
       li.firstChild.replaceWith(
         Object.assign( document.createElement("span"), {
-        textContent: li.childNodes[0].textContent.trim(),
-        className: `point`} ));
+          textContent: li.childNodes[0].textContent.trim(),
+          className: `point`} ));
     }
   });
 }
@@ -274,14 +277,14 @@ function setComponentStyleFor(elem, styling) {
 }
 
 function iWillBeBack() {
-    const tmpElem = $(`<span id="_TMP">
+  const tmpElem = $(`<span id="_TMP">
       <span style="color:red;font-weight:bold">I'll be back</span> ...
       <div>test element manipulation within (nested) shadow roots 'from the outside'</div>
       </span>`).first();
-    $.node(`expandable-text`).nth(3).shadowRoot
-      .querySelector(`div[is]`).nth(2)
-      .replaceWith(tmpElem);
-    setTimeout(_ => tmpElem.replaceWith($(`<div is='my-counter'>`).first()), 4000);
+  $.node(`expandable-text`).nth(3).shadowRoot
+    .querySelector(`div[is]`).nth(2)
+    .replaceWith(tmpElem);
+  setTimeout(_ => tmpElem.replaceWith($(`<div is='my-counter'>`).first()), 4000);
 }
 
 function addLogButtons() {
@@ -359,10 +362,10 @@ function handleExpandingList(elem) {
       next.classList.remove(`hidden`);
       return next.parentNode.classList.replace(`closed`, `open`);
     }
-
+    
     next.classList.add(`hidden`);
     next.parentNode.classList.replace(`open`, `closed`);
-
+    
   };
   reporter.report(`[client] Handling &lt;${elem.myName}> (delegate, so once)`);
   $.delegate(`click`, `${elem.myName} span`, handler);
@@ -434,7 +437,7 @@ function styleExpandingListComponent(elem) {
       list-style-type: none;
       margin: 0 0 0 -2rem;
      }`,
-     `${myName} ul:first-child {
+    `${myName} ul:first-child {
       margin-top: 0.6rem;
      }`,
     `${myName} ul ul li {
