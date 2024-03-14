@@ -1,9 +1,8 @@
 import { logFactory, $ } from "./sbHelpers.bundled.js";
-import { default as CreateComponent, reporter} from "../Bundle/WebComponentFactory.min.js";
+import { default as CreateComponent, reporter} from "../Src/WebComponentFactory.js";
 const { log: print } = logFactory();
 window.$ = $;
 stylePage();
-console.log(`WTF`);
 demo();
 
 
@@ -60,10 +59,14 @@ function implement() {
     .appendTo(customContainer);
   
   // add copyright-slotted component (top of document)
+  const ghLink = `<a slot="backlinkgh" target="_top" href="//github.com/KooiInc/es-webcomponent-factory">GitHub</a>`;
+  const sbLink = `<a slot="backlinksb" target="_top" href="//stackblitz.com/@KooiInc">All projects</a>`;
   $(` <copyright-slotted>
         <span slot="year">${
     new Date().getFullYear()}</span>
-        <a slot="backlink" target="_top" href="//stackblitz.com/@KooiInc">All projects</a>
+        ${/stackblitz/i.test(location.href)
+          ? `| ${sbLink} | ${ghLink}`
+          : `| ${ghLink}`}
       </copyright-slotted>`, customContainer, $.at.AfterBegin);
   
   // move log entries to their own container and prepend a header
@@ -100,7 +103,9 @@ function copyrightRenderer(elem) {
       }
     </style>
     <div>&copy;
-      <slot name="year"></slot> KooiInc | <slot name="backlink"></slot>
+      <slot name="year"></slot> KooiInc |
+      <slot name="backlinksb"></slot>
+      <slot name="backlinkgh"></slot>
     </div>`;
 }
 
@@ -140,27 +145,22 @@ function expandableTextRenderer(elem) {
 }
 
 function myCounterRenderer(elem) {
-  if (!elem.state.handling) {
-    Object.defineProperty(elem.state, `handling`, {get() { return counterBttnHandlerFactory(elem); }});
-    elem.setComponentState({ handling: counterBttnHandlerFactory(elem) });
-  }
-  elem.nth() && elem.setComponentState({instance: elem.nth()});
   const shadow = createOrRetrieveShadowRoot(elem);
   shadow.adoptedStyleSheets = [setComponentStyleFor(elem, getCounterComponentStyle())];
   shadow.innerHTML = `
       <div class="content">
         <div class="obligCounter" data-value="0" id="theCounterBttn"></div>
       </div>`;
-  const counterBttn = shadow.querySelector(`#theCounterBttn`);
-  counterBttn.addEventListener(`pointerover`, elem.state.handling);
-  counterBttn.addEventListener(`pointerout`, elem.state.handling);
+  shadow
+    .querySelector(`.content`)
+    .addEventListener(`pointerdown`, counterBttnHandlerFactory(elem));
 }
 
 function expandingListRenderer(elem) {
   unHide(elem);
   if (!elem.state.HandledAndStyled) {
     handleExpandingList(elem);
-    styleExpandingListComponent(elem)
+    styleExpandingListComponent(elem);
     elem.setComponentState({HandledAndStyled: true});
   }
 
@@ -180,7 +180,7 @@ function logDemoFactory(ascending) {
   const { now } = reporter;
   const firstLI = $(`#log2screen li:first-child`);
   return function(...args) {
-    args[0] = `${now()} ${args[0]}}`;
+    args[0] = `${now()} ${args[0]}`;
     print(...args);
     if (!ascending) {
       [...Array(args.length)].forEach(_ => {
@@ -196,44 +196,61 @@ function counterBttnHandlerFactory() {
   let value;
   let down = false;
   let reset = false;
+  const upperLimit = 999;
+  const reportStart = _ =>
+    reporter.report(`my-counter handler: counting <span class="${down ? `down` : `up`}"></span>`);
   
   return function(evt) {
-    if (evt.type === `pointerout`) {
-      return stop(`pointer moved out`);
-    }
-    
-    down = evt.shiftKey;
-    reset = evt.ctrlKey || evt.metaKey;
-    const me = evt.target.id === `theCounterBttn`
+    const theButton = evt.target.id === `theCounterBttn`
       ? evt.target
       : evt.target.querySelector(`#theCounterBttn`);
+    const downState = down;
+    down = evt.shiftKey;
+    reset = evt.ctrlKey || evt.metaKey;
+    
+    if (!down && !reset && timer) { return stop(``, theButton); }
     
     if (reset) {
-      clearTimeout(timer);
-      me.dataset.value = '0';
-      return reporter.report(`my-counter stopped: reset requested`);
+      theButton.dataset.value = '0';
+      return stop(`reset requested`, theButton);
     }
     
-    if (timer) { return; }
+    if (timer) {
+      if (downState !== down) {
+        reporter.report(`my-counter handler: SHIFT detected, reversing ...`);
+        reportStart();
+      }
+      return;
+    }
     
-    timer = setTimeout(timed, 500);
-    reporter.report(`my-counter handler: start continuous ${down ? `de` : `in`}crement`);
+    theButton.classList.add(`active`);
+    timer = setTimeout(timed, 50);
+    
+    reportStart();
     
     function timed() {
-      value = +me.dataset.value + (down ? -1 : 1);
+      value = +theButton.dataset.value + (down ? -1 : 1);
       
-      if (value <= 0) {
-        me.dataset.value = 0;
-        return stop(`zero reached`);
+      if (value === upperLimit) {
+        reporter.report(`my-counter handler: limit ${upperLimit} reached, reversing...`);
+        down = true;
+        reportStart();
       }
       
-      me.dataset.value = value < 0 ? 0 : value;
-      timer = setTimeout(timed, 1000);
+      if (value <= 0) {
+        theButton.dataset.value = 0;
+        theButton.dataset.descending = '0';
+        return stop(`zero reached`, theButton);
+      }
+      
+      theButton.dataset.value = value < 0 ? 0 : value;
+      timer = setTimeout(timed, 50);
     }
   }
   
-  function stop(reason) {
-    reason && timer && reporter.report(`my-counter stopped: ${reason}`);
+  function stop(reason, bttn) {
+    bttn.classList.remove(`active`);
+    timer && reporter.report(`my-counter handler stopped${reason?.trim()?.length ? `:` : ` `} ${reason}`);
     clearTimeout(timer);
     down = false;
     timer = undefined;
@@ -299,7 +316,6 @@ function addLogButtons() {
     }
     
     if (origin.dataset.logaction === `logDirection`) {
-      console.log(`W T F`);
       const flippedState = toggleState(states.ascending);
       localStorage.setItem(`logAscending`, +flippedState);
       return location.reload();
@@ -363,12 +379,12 @@ function getCounterComponentStyle() {
         border: 1px solid #777;
         display: inline-block;
         text-align: center;
-        width: 80px;
+        width: 100px;
         margin: 0;
         padding: 5px;
       }`,
     `div.content:hover:after {
-        content: 'Hover to start counting, Shift+hover to count downward, Ctrl/Cmd+hover to reset';
+        content: 'Click to start/stop counting (0<->999), Shift+click to count downward, Ctrl/Cmd+click to reset';
         color: #444;
         padding: 3px;
         display: block;
@@ -385,7 +401,7 @@ function getCounterComponentStyle() {
     `div.obligCounter {
         background-color: rgb(239 239 239);
         display: inline-block;
-        width: 50px;
+        width: 80px;
         height: 50px;
         color: #999;
         border: none;
@@ -396,7 +412,7 @@ function getCounterComponentStyle() {
         line-height: 50px;
         border: 1px solid transparent;
       }`,
-    `.content:hover div.obligCounter {
+    `.content:hover div.obligCounter, div.obligCounter.active {
         color: blue;
         box-shadow: #c0c0c0 1px 1px 6px 2px;
         border-color: #999;
@@ -499,6 +515,16 @@ function stylePage() {
     `.container {
       inset: 0;
       position: absolute;
+    }`,
+    `span.down:after, span.up:after {
+      font-size: 1.5em;
+      content: '\\261D';
+      transform: rotate(40deg);
+      display: inline-block;
+    }`,
+    `span.down:after {
+      vertical-align: middle;
+      transform: rotate(220deg);
     }`,
     `#log2screen, .customContainer, #logContainer {
       max-width: 50vw;

@@ -7,495 +7,487 @@
 </head>
 
 <body>
-<expanding-list style="display: none">
-  <ul>
-    <li class="header">
-      <expandable-text>
-        <h3>MDN example replication</h3>
-        <div class="fold">
-          <div>The expanding list web component example from
-            <a href="https://mdn.github.io/web-components-examples/expanding-list-web-component/" target="_blank">MDN
-              example</a>
+  <expanding-list style="display: none">
+    <ul>
+      <li class="header">
+        <expandable-text>
+          <h3>MDN example replication</h3>
+          <div class="fold">
+            <div>The expanding list web component example from
+              <a href="https://mdn.github.io/web-components-examples/expanding-list-web-component/" target="_blank">MDN
+                example</a>
+            </div>
+            <div><code>&lt;expanding-list></code> connected from within index.html</div>
+            <div>
+              <b>Note</b>: styling and coding for this component are modernized (and less convoluted)
+              versions of the code in the original MDN example.
+            </div>
           </div>
-          <div><code>&lt;expanding-list></code> connected from within index.html</div>
-          <div>
-            <b>Note</b>: styling and coding for this component are modernized (and less convoluted)
-            versions of the code in the original MDN example.
-          </div>
+        </expandable-text>
+      </li>
+      <li>
+        UK
+        <ul>
+          <li>
+            Yorkshire
+            <ul>
+              <li>
+                Leeds
+                <ul>
+                  <li>Train station</li>
+                  <li>Town hall</li>
+                  <li>
+                    Headrow
+                    <ul>
+                      <li>
+                        Even numbers
+                        <ul>
+                          <li>2 - 20</li>
+                          <li>22 - 40</li>
+                          <li>42 up</li>
+                        </ul>
+                      </li>
+                      <li>Odd numbers
+                        <ul>
+                          <li>1 - 19</li>
+                          <li>21 - 39</li>
+                          <li>41 up</li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li>Bradford</li>
+              <li>Hull</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        USA
+        <ul>
+          <li>
+            California
+            <ul>
+              <li>Los Angeles</li>
+              <li>San Francisco</li>
+              <li>Berkeley</li>
+            </ul>
+          </li>
+          <li>Nevada</li>
+          <li>Oregon</li>
+        </ul>
+      </li>
+    </ul>
+  </expanding-list>
+
+  <expanding-list style="display: none">
+    <ul>
+      <li class="header">
+        <h3>Animals!</h3>
+        <div><code>&lt;expanding-list></code> (intially) connected from within index.html</div>
+      </li>
+      <li>
+        Furry
+        <ul>
+          <li>Cats</li>
+          <li>Dogs</li>
+          <li>Monkeys</li>
+        </ul>
+      </li>
+      <li>
+        Slippery
+        <ul>
+          <li>
+            When wet
+            <ul>
+              <li>Snakes</li>
+              <li>Reptiles</li>
+            </ul>
+          </li>
+          <li>
+            Always
+            <ul>
+              <li>Fish</li>
+              <li>Snails</li>
+              <li>Certain types of humans</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </expanding-list>
+
+  <expandable-text style="display: none">
+    <div>
+      <h2 data-expanded="0">Web components without class syntax</h2>
+      <div class="fold">
+        <div>
+          Contrary to what many think or believe, there are <i>not</i> many cases in EcmaScript (ES)
+          where it makes sense to use the recently added
+          <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes">class
+            syntax</a> (I would even argue that ES class syntax is completely <i>unnecessary</i>).
         </div>
-      </expandable-text>
-    </li>
-    <li>
-      UK
-      <ul>
-        <li>
-          Yorkshire
+        <div>
+          It makes even less sense that for the creation of custom HTML elements a developer seems to
+          have <i>only</i> this class syntax available.
+        </div>
+        <div>
+          So I created a small factory to create web components without this class syntax. Basically
+          it replaces the <code>super</code> call within the class with a constructor created using
+          <code>Reflect.construct</code> and the desired elements' prototype (autonomous: <code>HTMLElement</code>,
+          custom: any element, e.g. <code>HTMLOListElement</code>). See the module file (<code>./Src/WebComponentFactory.js</code>)
+          for details and <code>./index.js</code> and/or <code>./index.html</code> for application
+          examples.
+        </div>
+        <div>
+          <b>Notes</b>
           <ul>
             <li>
-              Leeds
+              The text you are reading now is the content of the web component
+              <code>expandable-text</code>.
+            </li>
+            <li>
+              The WebComponentFactory module uses
+              <a target="_blank" href="https://stackblitz.com/edit/js-nyqr5l?file=index.js"
+              >design by contract</a> in conjunction with a
+              <a target="_blank" href="https://stackblitz.com/edit/js-a1ggb3?file=index.js"
+              >small utility</a> to check the type of ES-variables.
+            </li>
+            <li>
+              This demo uses the module
+              <a target="_blank" href="https://www.npmjs.com/package/stackblitzhelpers">stackblitzhelpers</a>
+              for printing logs to the screen. That module also includes the module
+              <a target="_blank" href="https://github.com/KooiInc/JQL">JQL</a> which is used for
+              some (dynamic) element and css manipulation.
+            </li>
+          </ul>
+        </div>
+        <div>
+          Enjoy and happy coding!
+        </div>
+        <div>
+          <h3>Syntax/usage</h3>
+          <ul>
+            <li>A component is created using the modules' imported default method <br>(e.g. <code>import
+              {default as CreateComponent} from "[module location]/WebComponentFactory.js"</code>).
+            </li>
+            <li>The component creator method receives at least a (<a target="_blank"
+                                                                     href="https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name"
+            >valid</a>
+              ) <i>component name</i>. Other parameters are optional. The parameter block is passed as
+              an <code>Object literal</code>. The signature is <code class="block">CreateComponent({
+                <br>&nbsp;&nbsp;componentName: string, <br>&nbsp;&nbsp;[onConnect: Function(node: HTMLElement
+                <span class="comment">/* the custom node */</span>]),
+                <br>&nbsp;&nbsp;[extends: String]
+                <br>&nbsp;&nbsp;<span class="comment">//^ the {extends} parameter for
+                  customElements.define. e.g. 'ul', `TABLE` or 'P'</span>
+                <br>&nbsp;&nbsp;[onDisconnect: Function(node: HTMLElement <span class="comment">/* the removed custom node */</span>)],
+                <br>&nbsp;&nbsp;[onAdopted: Function(node: HTMLElement <span class="comment">/* the adopted custom node */</span>)],
+                <br>&nbsp;&nbsp;[onAttrChange: Object {attributes: Array[string], method: Function },
+                <br>&nbsp;&nbsp;<span class="comment">/* the signature of [method] is
+              <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Function(
+              <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node: HTMLElement <span class="comment">//the custom element instance</span>
+              <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attributeName: string,
+              <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;oldValue: string,
+              <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newValue: string ) {...} */</span> </code>
+              <b>Note</b>: <code>componentName</code> and <code>onAttrChange -
+                attributes parameter</code> are strictly checked by contract. When
+              <code>componentName</code> violates the contract (the contract enforces
+              a <a target="_blank" href="https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name"
+              >valid custom element name</a>), the custom element creation
+              will not be executed (with a message in the console). When the
+              <code>onAttrChange - attributes parameter</code> is invalid, its default
+              value will be used (with a message within the console).
+              <code>onDisconnect</code>, <code>onConnect</code> and <code>onAttrChange - method
+                parameter</code> are by default empty Functions.
+            </li>
+            <li>A custom element instance can exist in html (see <i>index.html</i>). It will be
+              rendered on creation within the script. <br>e.g. the MDN example replication is created
+              as <code class="block">CreateComponent( { <br>&nbsp;&nbsp;componentName: `expanding-list
+                <br>&nbsp;&nbsp;onConnect: function(node), <br>&nbsp;&nbsp;onDisconnect: disconnector,
+                <br>&nbsp;&nbsp;onAttrChange: { attributes: [`data-hithere`], method: attrChange }, }
+                ) {...}</code>
+            </li>
+            <li>
+              A component can be instantiated by creating and appending it, e.g. <code class="block">CreateComponent({
+              <br>&nbsp;&nbsp;componentName: 'my-counter' <br>&nbsp;&nbsp;onConnect:
+              myCounterRendererFunction,}); <br>&nbsp;&nbsp;document.body.append(document.createElement('my-counter'))</code>
+            </li>
+            <li>
+              The module provides two custom methods and two custom properties for instances or within
+              the constructors' prototype.
               <ul>
-                <li>Train station</li>
-                <li>Town hall</li>
                 <li>
-                  Headrow
-                  <ul>
-                    <li>
-                      Even numbers
-                      <ul>
-                        <li>2 - 20</li>
-                        <li>22 - 40</li>
-                        <li>42 up</li>
-                      </ul>
-                    </li>
-                    <li>Odd numbers
-                      <ul>
-                        <li>1 - 19</li>
-                        <li>21 - 39</li>
-                        <li>41 up</li>
-                      </ul>
-                    </li>
-                  </ul>
+                  One can retrieve the tag name of a custom element instance using <code>[instance].myName</code>.
+                  Usage example: <code class="block">const myCounters =
+                  [...document.querySelectorAll(`div`)] <br>&nbsp;&nbsp;.filter(el => el.myName &&
+                  /my-counter/.test(el.myName));</code> <i>Fun fact</i>: for created non autonomous
+                  elements, <code>myName</code> is also available. <br>So when you created <code>&lt;div
+                  is="my-element"></code>, for every div in the DOM you can use <br><code>document.querySelector(`div.something`).myName
+                  <span class="comment">// => "div"</span></code>.
+                </li>
+                <li>
+                  One can retrieve the nth custom element instance from the DOM using the
+                  <code>.nth</code> method. Example: the <code>expandable-text</code> component has
+                  4 instances in this document. To retrieve the second instance of it use
+                  <code>document.querySelector(`expandandable-text`).nth(2)</code>.
+                  See the <code>implement</code> function within <code>index.js</code> for a usage
+                  example. <br><b>Note</b>: the parameter (number) of <code>.nth</code> is <i>not</i>
+                  zero based.
+                </li>
+                <li>
+                  To enable storing and/or retrieving custom element state(s) the method <code>[instance].setComponentState</code>
+                  and the property <code>[instance].state</code> are available. <br>Say you want to
+                  style a custom element in a global stylesheet, it's not necessary to repeat the
+                  styling for every instance you add to or move within the DOM. In that case within
+                  the rendering function (<code>onConnect</code>) you use for example:
+                  <code class="block">function myRenderer(elem) { <br>&nbsp;&nbsp;if
+                    (!elem.state.isStyled) { <br>&nbsp;&nbsp;&nbsp;&nbsp;initiateStyle(elem); <br>&nbsp;&nbsp;&nbsp;&nbsp;elem.setComponentState({isStyled:
+                    true, note: "used JQL/LifeCSS"}); <br>&nbsp;&nbsp;}
+                    <br>&nbsp;&nbsp;<span class="comment">// ... more code</span> <br>}</code>
+                  <b>Note</b>: see also <code>./Src/index.js[expandableTextRenderer]</code>. In it the
+                  stylesheet and handler for the custom <code>expandable-text</code> component are
+                  stored within the custom element state and encapsulated in its instances' <code>shadowRoot</code>.
                 </li>
               </ul>
             </li>
-            <li>Bradford</li>
-            <li>Hull</li>
+            <li>The module also exports a <code>reporter</code> Object. <br>With it one can force
+              reporting in the console and/or using a custom reporting method. For the examples in
+              this demo it is defined as: <code class="block">import {default as CreateComponent,
+                reporter} from
+                <br>&nbsp;&nbsp;"[module location]/WebComponentFactory.js"; <br>reporter.on();
+                <br>reporter.report = logReverseFactory();
+                <br>reporter.clientOnly = false;
+                <br><span class="comment">//^ report from client only, or both client and module,
+                  default false</span>
+              </code>
+              See <b>Create/rendering logs</b> at the bottom of the
+              demo.
+            </li>
           </ul>
-        </li>
-      </ul>
-    </li>
-    <li>
-      USA
-      <ul>
-        <li>
-          California
-          <ul>
-            <li>Los Angeles</li>
-            <li>San Francisco</li>
-            <li>Berkeley</li>
-          </ul>
-        </li>
-        <li>Nevada</li>
-        <li>Oregon</li>
-      </ul>
-    </li>
-  </ul>
-</expanding-list>
-
-<expanding-list style="display: none">
-  <ul>
-    <li class="header">
-      <h3>Animals!</h3>
-      <div><code>&lt;expanding-list></code> (intially) connected from within index.html</div>
-    </li>
-    <li>
-      Furry
-      <ul>
-        <li>Cats</li>
-        <li>Dogs</li>
-        <li>Monkeys</li>
-      </ul>
-    </li>
-    <li>
-      Slippery
-      <ul>
-        <li>
-          When wet
-          <ul>
-            <li>Snakes</li>
-            <li>Reptiles</li>
-          </ul>
-        </li>
-        <li>
-          Always
-          <ul>
-            <li>Fish</li>
-            <li>Snails</li>
-            <li>Certain types of humans</li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</expanding-list>
-
-<expandable-text style="display: none">
-  <div>
-    <h2 data-expanded="0">Web components without class syntax</h2>
-    <div class="fold">
-      <div>
-        Contrary to what many think or believe, there are <i>not</i> many cases in EcmaScript (ES)
-        where it makes sense to use the recently added
-        <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes">class
-          syntax</a> (I would even argue that ES class syntax is completely <i>unnecessary</i>).
-      </div>
-      <div>
-        It makes even less sense that for the creation of custom HTML elements a developer seems to
-        have <i>only</i> this class syntax available.
-      </div>
-      <div>
-        So I created a small factory to create web components without this class syntax. Basically
-        it replaces the <code>super</code> call within the class with a constructor created using
-        <code>Reflect.construct</code> and the desired elements' prototype (autonomous: <code>HTMLElement</code>,
-        custom: any element, e.g. <code>HTMLOListElement</code>). See the module file (<code>./Src/WebComponentFactory.js</code>)
-        for details and <code>./index.js</code> and/or <code>./index.html</code> for application
-        examples.
-      </div>
-      <div>
-        <b>Notes</b>
-        <ul>
-          <li>
-            The text you are reading now is the content of the web component
-            <code>expandable-text</code>.
-          </li>
-          <li>
-            The WebComponentFactory module uses
-            <a target="_blank" href="https://stackblitz.com/edit/js-nyqr5l?file=index.js"
-            >design by contract</a> in conjunction with a
-            <a target="_blank" href="https://stackblitz.com/edit/js-a1ggb3?file=index.js"
-            >small utility</a> to check the type of ES-variables.
-          </li>
-          <li>
-            This demo uses the module
-            <a target="_blank" href="https://www.npmjs.com/package/stackblitzhelpers">stackblitzhelpers</a>
-            for printing logs to the screen. That module also includes the module
-            <a target="_blank" href="https://github.com/KooiInc/JQL">JQL</a> which is used for
-            some (dynamic) element and css manipulation.
-          </li>
-        </ul>
-      </div>
-      <div>
-        Enjoy and happy coding!
-      </div>
-      <div>
-        <h3>Syntax/usage</h3>
-        <ul>
-          <li>A component is created using the modules' imported default method <br>(e.g. <code>import
-            {default as CreateComponent} from "[module location]/WebComponentFactory.js"</code>).
-          </li>
-          <li>The component creator method receives at least a (<a target="_blank"
-                                                                   href="https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name"
-          >valid</a>
-            ) <i>component name</i>. Other parameters are optional. The parameter block is passed as
-            an <code>Object literal</code>. The signature is <code class="block">CreateComponent({
-              <br>&nbsp;&nbsp;componentName: string, <br>&nbsp;&nbsp;[onConnect: Function(node: HTMLElement
-              <span class="comment">/* the custom node */</span>]),
-              <br>&nbsp;&nbsp;[extends: String]
-              <br>&nbsp;&nbsp;<span class="comment">//^ the {extends} parameter for
-                customElements.define. e.g. 'ul', `TABLE` or 'P'</span>
-              <br>&nbsp;&nbsp;[onDisconnect: Function(node: HTMLElement <span class="comment">/* the removed custom node */</span>)],
-              <br>&nbsp;&nbsp;[onAdopted: Function(node: HTMLElement <span class="comment">/* the adopted custom node */</span>)],
-              <br>&nbsp;&nbsp;[onAttrChange: Object {attributes: Array[string], method: Function },
-              <br>&nbsp;&nbsp;<span class="comment">/* the signature of [method] is
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Function(
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node: HTMLElement <span class="comment">//the custom element instance</span>
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attributeName: string,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;oldValue: string,
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newValue: string ) {...} */</span> </code>
-            <b>Note</b>: <code>componentName</code> and <code>onAttrChange -
-              attributes parameter</code> are strictly checked by contract. When
-            <code>componentName</code> violates the contract (the contract enforces
-            a <a target="_blank" href="https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name"
-            >valid custom element name</a>), the custom element creation
-            will not be executed (with a message in the console). When the
-            <code>onAttrChange - attributes parameter</code> is invalid, its default
-            value will be used (with a message within the console).
-            <code>onDisconnect</code>, <code>onConnect</code> and <code>onAttrChange - method
-              parameter</code> are by default empty Functions.
-          </li>
-          <li>A custom element instance can exist in html (see <i>index.html</i>). It will be
-            rendered on creation within the script. <br>e.g. the MDN example replication is created
-            as <code class="block">CreateComponent( { <br>&nbsp;&nbsp;componentName: `expanding-list
-              <br>&nbsp;&nbsp;onConnect: function(node), <br>&nbsp;&nbsp;onDisconnect: disconnector,
-              <br>&nbsp;&nbsp;onAttrChange: { attributes: [`data-hithere`], method: attrChange }, }
-              ) {...}</code>
-          </li>
-          <li>
-            A component can be instantiated by creating and appending it, e.g. <code class="block">CreateComponent({
-            <br>&nbsp;&nbsp;componentName: 'my-counter' <br>&nbsp;&nbsp;onConnect:
-            myCounterRendererFunction,}); <br>&nbsp;&nbsp;document.body.append(document.createElement('my-counter'))</code>
-          </li>
-          <li>
-            The module provides two custom methods and two custom properties for instances or within
-            the constructors' prototype.
-            <ul>
-              <li>
-                One can retrieve the tag name of a custom element instance using <code>[instance].myName</code>.
-                Usage example: <code class="block">const myCounters =
-                [...document.querySelectorAll(`div`)] <br>&nbsp;&nbsp;.filter(el => el.myName &&
-                /my-counter/.test(el.myName));</code> <i>Fun fact</i>: for created non autonomous
-                elements, <code>myName</code> is also available. <br>So when you created <code>&lt;div
-                is="my-element"></code>, for every div in the DOM you can use <br><code>document.querySelector(`div.something`).myName
-                <span class="comment">// => "div"</span></code>.
-              </li>
-              <li>
-                One can retrieve the nth custom element instance from the DOM using the
-                <code>.nth</code> method. Example: the <code>expandable-text</code> component has
-                4 instances in this document. To retrieve the second instance of it use
-                <code>document.querySelector(`expandandable-text`).nth(2)</code>.
-                See the <code>implement</code> function within <code>index.js</code> for a usage
-                example. <br><b>Note</b>: the parameter (number) of <code>.nth</code> is <i>not</i>
-                zero based.
-              </li>
-              <li>
-                To enable storing and/or retrieving custom element state(s) the method <code>[instance].setComponentState</code>
-                and the property <code>[instance].state</code> are available. <br>Say you want to
-                style a custom element in a global stylesheet, it's not necessary to repeat the
-                styling for every instance you add to or move within the DOM. In that case within
-                the rendering function (<code>onConnect</code>) you use for example:
-                <code class="block">function myRenderer(elem) { <br>&nbsp;&nbsp;if
-                  (!elem.state.isStyled) { <br>&nbsp;&nbsp;&nbsp;&nbsp;initiateStyle(elem); <br>&nbsp;&nbsp;&nbsp;&nbsp;elem.setComponentState({isStyled:
-                  true, note: "used JQL/LifeCSS"}); <br>&nbsp;&nbsp;}
-                  <br>&nbsp;&nbsp;<span class="comment">// ... more code</span> <br>}</code>
-                <b>Note</b>: see also <code>./Src/index.js[expandableTextRenderer]</code>. In it the
-                stylesheet and handler for the custom <code>expandable-text</code> component are
-                stored within the custom element state and encapsulated in its instances' <code>shadowRoot</code>.
-              </li>
-            </ul>
-          </li>
-          <li>The module also exports a <code>reporter</code> Object. <br>With it one can force
-            reporting in the console and/or using a custom reporting method. For the examples in
-            this demo it is defined as: <code class="block">import {default as CreateComponent,
-              reporter} from
-              <br>&nbsp;&nbsp;"[module location]/WebComponentFactory.js"; <br>reporter.on();
-              <br>reporter.report = logReverseFactory();
-              <br>reporter.clientOnly = false;
-              <br><span class="comment">//^ report from client only, or both client and module,
-                default false</span>
-            </code>
-            See <b>Create/rendering logs</b> at the bottom of the
-            demo.
-          </li>
-        </ul>
+        </div>
       </div>
     </div>
-  </div>
-</expandable-text>
+  </expandable-text>
 
-<template id="log-header-notes">
-  <div>
-    <h3 data-expanded="0">Create/rendering log</h3>
-    <div class="fold">
-      <div><b>Notes</b>
-        <ul>
-          <li>The logging is reversed (most recent entry first) by default.
-            You can however toggle printing log entries descending
-            or ascending using a button.
-            After clicking the button, the document  will be reloaded.
-            The current choice is remembered over page reloads.
-          </li>
-          <li>
-            Because change and/or mutation listeners are not synchronous logging is probably/likely
-            <i>not</i> fully chronological.
-          </li>
-          <li>
-            Logging is inititialized with <code class="block"><span class="comment">[WebComponentFactory.]</span>reporter.on();
-            <br><span class="comment">[WebComponentFactory.]</span>reporter.report = logDemoFactory();</code>
-            If <code>report</code> is not assigned and reporter is on (<code>reporter.[on/off]()</code>
-            switches on/off), logging will occur within the developer console.
-          </li>
-          <li>
-            You can toggle printing all (module and client) log entries or only
-            log entries from the client script. After clicking  the button, the document
-            will be reloaded. The current choice is remembered over page reloads.
-          </li>
-          <li>
-            Moving elements using DOM-methods (e.g. <code>append</code> or <code>appendChild</code>)
-            means the moved element is rendered again (that's how the browser processes it). For
-            custom elements that are moved (re-)rendering is thus logged as <i>Removed [...]</i> and
-            <i>(Re)connected [...]</i> (when 'All log messages' is active).
-          </li>
-          <li>
-            The log can be cleared by line or completely.
-          </li>
-        </ul>
+  <template id="log-header-notes">
+    <div>
+      <h3 data-expanded="0">Create/rendering log</h3>
+      <div class="fold">
+        <div><b>Notes</b>
+          <ul>
+            <li>The logging is reversed (most recent entry first) by default.
+              You can however toggle printing log entries descending
+              or ascending using a button.
+              After clicking the button, the document  will be reloaded.
+              The current choice is remembered over page reloads.
+            </li>
+            <li>
+              Because change and/or mutation listeners are not synchronous logging is probably/likely
+              <i>not</i> fully chronological.
+            </li>
+            <li>
+              Logging is inititialized with <code class="block"><span class="comment">[WebComponentFactory.]</span>reporter.on();
+              <br><span class="comment">[WebComponentFactory.]</span>reporter.report = logDemoFactory();</code>
+              If <code>report</code> is not assigned and reporter is on (<code>reporter.[on/off]()</code>
+              switches on/off), logging will occur within the developer console.
+            </li>
+            <li>
+              You can toggle printing all (module and client) log entries or only
+              log entries from the client script. After clicking  the button, the document
+              will be reloaded. The current choice is remembered over page reloads.
+            </li>
+            <li>
+              Moving elements using DOM-methods (e.g. <code>append</code> or <code>appendChild</code>)
+              means the moved element is rendered again (that's how the browser processes it). For
+              custom elements that are moved (re-)rendering is thus logged as <i>Removed [...]</i> and
+              <i>(Re)connected [...]</i> (when 'All log messages' is active).
+            </li>
+            <li>
+              The log can be cleared by line or completely.
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-</template>
+  </template>
 
-<template id="counter-header-text">
-  <div>
-    <h3 data-expanded="1">The obligatory counter example</h3>
-    <div class="fold">
-      <div>
-        The counter is a custom (non autonomous) element
-        (<code>&lt;div is="my-counter"></code>). Every instance
-        uses a <i>shadow root</i> for styling and scripting its content.
+  <template id="counter-header-text">
+    <div>
+      <h3 data-expanded="1">The obligatory counter example</h3>
+      <div class="fold">
+        <div>
+          The counter is a custom (non autonomous) element
+          (<code>&lt;div is="my-counter"></code>). Every instance
+          uses a <i>shadow root</i> for styling and scripting its content.
+        </div>
+        <div>Here are two instances of <code>&lt;div is="my-counter"></code>.</div>
+        <div is="my-counter"></div>
+        <div is="my-counter"></div>
       </div>
-      <div>Here are two instances of <code>&lt;div is="my-counter"></code>.
-        The counters are counters with a quirk: you activate continuous counting
-        by <i>hovering</i> the 'button' and keep the mouse above it.
-        The counting stops when moving the mouse out of the button or
-        the value reached zero.
-        <br>When you press SHIFT whilst hovering the button,
-        counting will decrement (you don't need to hold SHIFT).
-        <br>When you press CTRL/CMD whilst hovering
-        the counter value is reset to zero.
-      </div>
-      <div is="my-counter"></div>
-      <div is="my-counter"></div>
     </div>
-  </div>
-</template>
+  </template>
 
-<template id="expandable-text-style">
-  <style>
-    a {
-      text-decoration: none;
-      font-weight: bold;
-    }
+  <template id="expandable-text-style">
+    <style>
+      a {
+        text-decoration: none;
+        font-weight: bold;
+      }
 
-    a[target]:before {
-      color: rgba(0, 0, 238, 0.7);
-      font-size: 1.1rem;
-      padding-right: 2px;
-      vertical-align: baseline;
-    }
+      a[target]:before {
+        color: rgba(0, 0, 238, 0.7);
+        font-size: 1.1rem;
+        padding-right: 2px;
+        vertical-align: baseline;
+      }
 
-    a[target="_top"]:before {
-      content: "↺";
-    }
+      a[target="_top"]:before {
+        content: "↺";
+      }
 
-    a[target="_blank"]:before {
-      content: "↗";
-    }
+      a[target="_blank"]:before {
+        content: "↗";
+      }
 
-    code {
-      color: green;
-      background-color: rgb(238, 238, 238);
-      padding: 1px;
-      font-family: monospace;
-      font-size: 0.9em;
-    }
+      code {
+        color: green;
+        background-color: rgb(238, 238, 238);
+        padding: 1px;
+        font-family: monospace;
+        font-size: 0.9em;
+      }
 
-    code.block {
-      display: block;
-      padding: 6px;
-      margin: 0.5rem 0;
-      max-width: 90%;
-    }
+      code.block {
+        display: block;
+        padding: 6px;
+        margin: 0.5rem 0;
+        max-width: 90%;
+      }
 
-    code .comment {
-      color: rgb(153, 153, 153);
-    }
+      code .comment {
+        color: rgb(153, 153, 153);
+      }
 
-    [data-expanded] {
-      cursor: pointer;
-      margin: 1rem 0;
-    }
+      [data-expanded] {
+        cursor: pointer;
+        margin: 1rem 0;
+      }
 
-    [data-expanded]:hover {
-      color: green;
-    }
+      [data-expanded]:hover {
+        color: green;
+      }
 
-    [data-expanded] + .fold {
-      margin-top: -0.5rem;
-    }
+      [data-expanded] + .fold {
+        margin-top: -0.5rem;
+      }
 
-    .fold ul {
-      margin: 0.5rem 0 0 -1.5rem;
-    }
+      .fold ul {
+        margin: 0.5rem 0 0 -1.5rem;
+      }
 
-    .fold ul li {
-      margin-top: 0.2rem;
-      list-style: '✓ ';
-    }
+      .fold ul li {
+        margin-top: 0.2rem;
+        list-style: '✓ ';
+      }
 
-    .fold ul li ul {
-      margin-top: 0.6rem;
-    }
+      .fold ul li ul {
+        margin-top: 0.6rem;
+      }
 
-    .fold ul li:last-child {
-      padding-bottom: 0;
-      margin-bottom: 0;
-    }
+      .fold ul li:last-child {
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
 
-    .fold div {
-      margin: 0.4rem 0 0 0;
-    }
+      .fold div {
+        margin: 0.4rem 0 0 0;
+      }
 
-    [data-expanded='1'] {
-      margin-bottom: 0.3rem;
-      z-index: 10;
-      line-height: 1.1rem;
-    }
+      [data-expanded='1'] {
+        margin-bottom: 0.3rem;
+        z-index: 10;
+        line-height: 1.1rem;
+      }
 
-    [data-expanded]:hover:after {
-      color: #999;
-      margin-left: 0.3rem;
-      font-weight: normal;
-      font-size: 10pt;
-      line-height: 1rem;
-    }
+      [data-expanded]:hover:after {
+        color: #999;
+        margin-left: 0.3rem;
+        font-weight: normal;
+        font-size: 10pt;
+        line-height: 1rem;
+      }
 
-    [data-expanded='0']:hover:after {
-      content: ' click to expand\2026';
-    }
+      [data-expanded='0']:hover:after {
+        content: ' click to expand\2026';
+      }
 
-    [data-expanded='1']:hover:after {
-      content: 'click to collapse\2026';
-    }
+      [data-expanded='1']:hover:after {
+        content: 'click to collapse\2026';
+      }
 
-    [data-expanded='1'] + .fold > div:first-child {
-      margin-top: 0;
-    }
+      [data-expanded='1'] + .fold > div:first-child {
+        margin-top: 0;
+      }
 
-    [data-expanded='1'] {
-      color: green;
-    }
+      [data-expanded='1'] {
+        color: green;
+      }
 
-    [data-expanded='1'] + .fold {
-      max-height: 50vh;
-      max-width: 100vw;
-      overflow-y: auto;
-      transition: all 1s ease;
-      border: 1px dashed #ccc;
-      padding: 8px 1.5rem 8px;
-      margin-top: 0.3rem;
-    }
+      [data-expanded='1'] + .fold {
+        max-height: 50vh;
+        max-width: 100vw;
+        overflow-y: auto;
+        transition: all 1s ease;
+        border: 1px dashed #ccc;
+        padding: 8px 1.5rem 8px;
+        margin-top: 0.3rem;
+      }
 
-    [data-expanded]:before {
-      display: inline-block;
-      width: 1.3rem;
-      height: 1.3rem;
-      margin-right: 5px;
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-position-x: 0;
-      background-position-y: -1px;
-      vertical-align: middle;
-      line-height: 1.3em;
-      content: ' ';
-    }
+      [data-expanded]:before {
+        display: inline-block;
+        width: 1.3rem;
+        height: 1.3rem;
+        margin-right: 5px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position-x: 0;
+        background-position-y: -1px;
+        vertical-align: middle;
+        line-height: 1.3em;
+        content: ' ';
+      }
 
-    [data-expanded='0']:before {
-      background-image: url('data:image/svg+xml;utf8,%3Csvg%20width%3D%22800px%22%20height%3D%22800px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%2022c5.523%200%2010-4.477%2010-10S17.523%202%2012%202%202%206.477%202%2012s4.477%2010%2010%2010Z%22%20fill%3D%22%23000000%22%20fill-opacity%3D%22.16%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpath%20d%3D%22m8%2010%204%204%204-4%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E');
-    }
+      [data-expanded='0']:before {
+        background-image: url('data:image/svg+xml;utf8,%3Csvg%20width%3D%22800px%22%20height%3D%22800px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%2022c5.523%200%2010-4.477%2010-10S17.523%202%2012%202%202%206.477%202%2012s4.477%2010%2010%2010Z%22%20fill%3D%22%23000000%22%20fill-opacity%3D%22.16%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpath%20d%3D%22m8%2010%204%204%204-4%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E');
+      }
 
-    [data-expanded='1']:before {
-      background-image: url('data:image/svg+xml;utf8,%3Csvg%20width%3D%22800px%22%20height%3D%22800px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%2022c5.523%200%2010-4.477%2010-10S17.523%202%2012%202%202%206.477%202%2012s4.477%2010%2010%2010Z%22%20fill%3D%22%23000000%22%20fill-opacity%3D%22.16%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpath%20d%3D%22m8%2014%204-4%204%204%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')
-    }
+      [data-expanded='1']:before {
+        background-image: url('data:image/svg+xml;utf8,%3Csvg%20width%3D%22800px%22%20height%3D%22800px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%2022c5.523%200%2010-4.477%2010-10S17.523%202%2012%202%202%206.477%202%2012s4.477%2010%2010%2010Z%22%20fill%3D%22%23000000%22%20fill-opacity%3D%22.16%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-miterlimit%3D%2210%22%2F%3E%3Cpath%20d%3D%22m8%2014%204-4%204%204%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')
+      }
 
-    [data-expanded='0'] + .fold {
-      overflow: hidden;
-      max-height: 0;
-      max-width: 40vw;
-      color: #c0c0c0;
-      padding: 0;
-      margin: -16px auto 0 1.5rem;
-      transition: all 1s ease;
-    }
+      [data-expanded='0'] + .fold {
+        overflow: hidden;
+        max-height: 0;
+        max-width: 40vw;
+        color: #c0c0c0;
+        padding: 0;
+        margin: -16px auto 0 1.5rem;
+        transition: all 1s ease;
+      }
 
-    [data-expanded='0'] + .fold > div:first-child {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      margin-top: 0.8rem;
-    }
-  </style>
-</template>
-<script src="./index.js" type="module"></script>
+      [data-expanded='0'] + .fold > div:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-top: 0.8rem;
+      }
+    </style>
+  </template>
+
+  <script src="./index.js" type="module"></script>
 </body>
 
 </html>
