@@ -1,0 +1,4 @@
+[submodule "es-contract-fiddler"]
+	path = es-contract-fiddler
+	url = git@github.com:KooiInc/es-contract-fiddler.git
+	branch = master

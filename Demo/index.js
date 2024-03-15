@@ -1,19 +1,9 @@
 import { logFactory, $ } from "./sbHelpers.bundled.js";
-import { default as CreateComponent, reporter} from "../Src/WebComponentFactory.js";
+import { default as CreateComponent, reporter } from "../Src/WebComponentFactory.js";
 const { log: print } = logFactory();
-window.$ = $;
-stylePage();
-demo();
-
+initialize();
 
 function demo() {
-  addLogButtons();
-  console.clear();
-  reporter.on();
-  reporter.clientOnly = !!(+localStorage.getItem(`clientOnly`));
-  const logAscending = !!(+localStorage.getItem(`logAscending`));
-  reporter.report = logDemoFactory(!!(+localStorage.getItem(`logAscending`)));
-  
   // (dynamic) html
   CreateComponent({
     componentName: `expanding-list`,
@@ -26,7 +16,8 @@ function demo() {
     componentName: `my-counter`,
     onConnect: myCounterRenderer,
     onAttrChange: { attributes: `no sir` },
-    //            ∟ onAttrChange bound by contract, so this will not work
+    //            ∟ onAttrChange bound by contract, so this will
+    //              have no effect, but also won't give an error
     extends: `DIV`,
   });
   
@@ -43,6 +34,17 @@ function demo() {
   });
   
   implement();
+}
+
+function initialize() {
+  stylePage();
+  addLogButtons();
+  console.clear();
+  reporter.on();
+  reporter.clientOnly = !!(+localStorage.getItem(`clientOnly`));
+  const logAscending = !!(+localStorage.getItem(`logAscending`));
+  reporter.report = logDemoFactory(!!(+localStorage.getItem(`logAscending`)));
+  demo();
 }
 
 function implement() {
