@@ -1,4 +1,4 @@
-import contractFactory from "./es-contract.js";
+import contractFactory from "../es-contract-fiddler/es-contract.js";
 
 const { contracts, IS } = contractFactory({contractsPrefix: `[Web Component creator module]`});
 registerContracts();
