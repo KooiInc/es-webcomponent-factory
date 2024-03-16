@@ -3,7 +3,7 @@ import { default as CreateComponent, reporter } from "../Src/WebComponentFactory
 const { log: print } = logFactory();
 initialize();
 
-function demo() {
+function createComponents() {
   // (dynamic) html
   CreateComponent({
     componentName: `expanding-list`,
@@ -44,7 +44,7 @@ function initialize() {
   reporter.clientOnly = !!(+localStorage.getItem(`clientOnly`));
   const logAscending = !!(+localStorage.getItem(`logAscending`));
   reporter.report = logDemoFactory(!!(+localStorage.getItem(`logAscending`)));
-  demo();
+  createComponents();
 }
 
 function implement() {
