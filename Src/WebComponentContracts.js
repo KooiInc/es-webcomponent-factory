@@ -1,6 +1,5 @@
-import contractFactory from "../es-contract-fiddler/es-contract.js";
-
-const { contracts, IS } = contractFactory({contractsPrefix: `[Web Component creator module]`});
+import contractFactory from "//cdn.jsdelivr.net/gh/KooiInc/es-contract-fiddler@latest/es-contract.min.js";
+const { contracts, IS, tryJSON } = contractFactory({contractsPrefix: `[Web Component creator module]`});
 registerContracts();
 
 export {contracts as default, IS};
@@ -18,22 +17,37 @@ function registerContracts() {
           }
       },
       attrChange: {
-        method: attrChangeObj => IS(attrChangeObj, Object) &&
-          validateAttributesParam(attrChangeObj?.attributes) &&
-          IS(attrChangeObj?.method, Function)
-            ? attrChangeObj : undefined,
+        method: onAttrChangeContract,
         defaultValue: {attributes: [], method: function() {}},
-        expected: `{attributes: Array, method: Function}`,
+        expected: `onAttrChange expected {attributes: Array, method: Function}`,
       },
     }
   );
   
-  function validateAttributesParam(attrs) {
-    return IS(attrs, Array) && attrs.filter(value =>
-        IS(value, String) && !/\s/g.test(value)).length === attrs.length &&
-      attrs || undefined;
+  function onAttrChangeContract(attrChangeObj) {
+    const cando = IS(attrChangeObj, Object) &&
+      validateAttributesParam(attrChangeObj?.attributes) &&
+      IS(attrChangeObj?.method, Function);
+    
+    if (attrChangeObj && !cando) { doReport(); }
+    
+    return cando ? attrChangeObj : undefined;
+    
+    function doReport() {
+      const meth =  IS(attrChangeObj?.method, Function) ? `Function ok` : `nothing or not a Function`;
+      console.log([`✘ [Web Component creator module]`,
+        `createComponent onAttrChange: contract for  parameters violated`,
+        `Input: { attributes: ${tryJSON(attrChangeObj?.attributes)}, method: ${meth} }`,
+        `Input expected: nothing or { attributes: Array[string], method: Function({input}) {...} }`,
+        `Will use default: { attributes: [], method: () => {} }`].join(`\n   `));
+    }
+    
+    function validateAttributesParam(attrs) {
+      return IS(attrs, Array) && attrs.filter(value =>
+          IS(value, String) && !/\s/g.test(value)).length === attrs.length &&
+        attrs || undefined;
+    }
   }
-  
 }
 
 function customElementNameContract(name) {
