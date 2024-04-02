@@ -85,7 +85,7 @@ function insertCopyright() {
   const isSB = /stackblitz/i.test(location.href);
   const isGithub = /github/i.test(location.href)
   const sbLink = isSB ? `<a slot="link" target="${isSB ? `_top` : `_blank`}" href="//stackblitz.com/@KooiInc">All projects</a>` : ``;
-  const ghLink = `<a slot="link" target="${isGithub ? `top` : `_blank`}"
+  const ghLink = `<a slot="link" target="${isGithub ? `_top` : `_blank`}"
     href="https://github.com/KooiInc/es-webcomponent-factory">${isGithub ? `back to ` : ``}@Github</a>`;
   document.body.insertAdjacentHTML(`afterbegin`,
     `<copyright-slotted>
