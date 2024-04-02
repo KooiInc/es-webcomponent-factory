@@ -5,6 +5,8 @@ const reporter = reporterFactory();
 export {
   createComponent as default,
   reporter,
+  createOrRetrieveShadowRoot,
+  setComponentStyleFor,
 };
 
 function createComponent( specs ) {
@@ -111,6 +113,27 @@ function now() {
 function getTagName(elem) {
   const isCustom = elem.getAttribute(`is`);
   return `${elem.tagName.toLowerCase()}${isCustom ? `[is='${isCustom}']` : ``}`;
+}
+
+function createOrRetrieveShadowRoot(elem, mode = { mode: `open`} ) {
+  let shadow = elem.shadowRoot;
+  return !shadow ? elem.attachShadow(mode) : shadow;
+}
+
+function setComponentStyleFor(elem, styling) {
+  if (elem.state.styling) {
+    return elem.state.styling;
+  }
+  
+  styling = styling.startsWith(`#`)
+    ? document.querySelector(styling).content.querySelector(`style`).textContent
+    : styling;
+  reporter.report(`[client] Storing embedded style for &lt;${elem.myName}>`);
+  const componentStylesheet = new CSSStyleSheet();
+  componentStylesheet.replaceSync(styling);
+  elem.setComponentState({styling: componentStylesheet});
+  
+  return elem.state.styling;
 }
 
 function reporterFactory() {
