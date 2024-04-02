@@ -1,5 +1,10 @@
 import { logFactory, $ } from "./sbHelpers.bundled.js";
-import { default as CreateComponent, reporter } from "../Src/WebComponentFactory.js";
+import {
+  default as CreateComponent,
+  reporter,
+  createOrRetrieveShadowRoot,
+  setComponentStyleFor } from "../Src/WebComponentFactory.js";
+
 const { log: print } = logFactory();
 initialize();
 
@@ -16,8 +21,8 @@ function createComponents() {
     componentName: `my-counter`,
     onConnect: myCounterRenderer,
     onAttrChange: { attributes: `no sir` },
-    //            ∟ onAttrChange bound by contract, so this will
-    //              have no effect, but also won't give an error
+    //            ∟ onAttrChange bound by contract, so this will have no
+    //              no effect, but contract violation reported in console
     extends: `DIV`,
   });
   
@@ -30,10 +35,61 @@ function createComponents() {
   // slotted
   CreateComponent( {
     componentName: `copyright-slotted`,
-    onConnect: copyrightRenderer,
+    onConnect(elem) {
+      const shadow = createOrRetrieveShadowRoot(elem);
+      const componentStyle = Object.assign(
+        document.createElement("style"),
+        { textContent: `
+          :host {
+            color: #777;
+            display: block;
+            position: fixed;
+            bottom: 0.5rem;
+            right: 2rem;
+            z-index: 2;
+            a {
+              text-decoration: none;
+              font-weight: bold;
+            }
+            a[target]):before {
+              color: rgba(0, 0, 238, 0.7);
+              font-size: 1.1rem;
+              padding-right: 2px;
+              vertical-align: middle;
+            }
+            a[target="_blank"]):before { content: "↗"; }
+            a[target="_top"]):before { content: "↺"; }
+          }
+          ::slotted(span.yr) {
+            font-weight: bold;
+            color: green;
+          }
+          ::slotted(a[target]):after {
+            content: ' | ';
+            color: #000;
+            font-weight: normal;
+          }
+          ::slotted(a[target]:last-child):after { content: '';  }`
+        } );
+      const content = Object.assign(
+        document.createElement(`div`), {
+          innerHTML: `[&copy; <span><slot name="year"/></span> KooiInc] <slot name="link"/>`})
+      shadow.append(componentStyle, content);
+    }
   });
   
   implement();
+}
+
+function insertCopyright() {
+  const isSB = /stackblitz/i.test(location.href);
+  const sbLink = `<a slot="link" target="${isSB ? `_top` : `_blank`}" href="//stackblitz.com/@KooiInc">All projects</a>`;
+  const myLink = `<a slot="link" target="_blank" href="https://github.com/KooiInc/es-webcomponent-factory">Web component factory @Github</a>`;
+  document.body.insertAdjacentHTML(`afterbegin`,
+    `<copyright-slotted>
+        <span slot="year" class="yr">${new Date().getFullYear()}</span>
+        ${sbLink}${myLink}
+    </copyright-slotted>`);
 }
 
 function initialize() {
@@ -61,18 +117,7 @@ function implement() {
     .appendTo(customContainer);
   
   // add copyright-slotted component (top of document)
-  const isSB = /stackblitz/i.test(location.href);
-  const ghLink = `<a target="${isSB ? `_blank` : `_top`}"
-    href="//github.com/KooiInc/es-webcomponent-factory">GitHub</a>`;
-  const sbLink = `<a target="_top" href="//stackblitz.com/@KooiInc">All projects</a>`;
-  $(` <copyright-slotted>
-        <span slot="year">${new Date().getFullYear()}</span>
-        <span slot="links" class="regular">
-        ${isSB
-    ? `| ${sbLink} | ${ghLink}`
-    : `| ${ghLink}`}
-        </span>
-      </copyright-slotted>`, customContainer, $.at.AfterBegin);
+  insertCopyright();
   
   // move log entries to their own container and prepend a header
   // (a expandable-text component)
@@ -82,36 +127,6 @@ function implement() {
   
   // popup with small test in callback
   $.Popup.show({content: `All done, enjoy`, closeAfter: 2, callback: iWillBeBack});
-}
-
-function copyrightRenderer(elem) {
-  const shadow = createOrRetrieveShadowRoot(elem);
-  shadow.innerHTML = `
-    <style>
-      ::slotted(span) { font-weight: bold; color: green; }
-      ::slotted(span.regular) { font-weight: normal; color: black; }
-      div { margin-top: 1rem ;}
-      ::slotted(a) {
-        text-decoration: none;
-        font-weight: bold;
-      }
-      ::slotted(a[target]):before {
-        color: rgba(0, 0, 238, 0.7);
-        font-size: 1.1rem;
-        padding-right: 2px;
-        vertical-align: baseline;
-      }
-      ::slotted(a[target="_top"])::before {
-        content: "↺";
-      }
-      ::slotted(a[target="_blank"])::before {
-        content: "↗";
-      }
-    </style>
-    <div>&copy;
-      <slot name="year"></slot> KooiInc
-      <slot name="links"></slot>
-    </div>`;
 }
 
 function expandableTextRenderer(elem) {
@@ -262,22 +277,6 @@ function counterBttnHandlerFactory() {
   }
 }
 
-function setComponentStyleFor(elem, styling) {
-  if (elem.state.styling) {
-    return elem.state.styling;
-  }
-  
-  styling = styling.startsWith(`#`)
-    ? $.node(styling).content.querySelector(`style`).textContent
-    : styling;
-  reporter.report(`[client] Storing embedded style for &lt;${elem.myName}>`);
-  const componentStylesheet = new CSSStyleSheet();
-  componentStylesheet.replaceSync(styling);
-  elem.setComponentState({styling: componentStylesheet});
-  
-  return elem.state.styling;
-}
-
 function iWillBeBack() {
   const tmpElem = $(`<span id="_TMP">
       <span style="color:red;font-weight:bold">I'll be back</span> ...
@@ -336,11 +335,6 @@ function addLogButtons() {
       return $(`#log2screen li:not(.logBttns)`).first().remove();
     }
   });
-}
-
-function createOrRetrieveShadowRoot(elem, mode = { mode: `open`} ) {
-  let shadow = elem.shadowRoot;
-  return !shadow ? elem.attachShadow(mode) : shadow;
 }
 
 function attrChange(elem, name, oldV, newV) {
