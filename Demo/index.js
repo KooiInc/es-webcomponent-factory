@@ -47,23 +47,23 @@ function createComponents() {
             bottom: 0.5rem;
             right: 2rem;
             z-index: 2;
-            a {
-              text-decoration: none;
-              font-weight: bold;
-            }
-            a[target]):before {
-              color: rgba(0, 0, 238, 0.7);
-              font-size: 1.1rem;
-              padding-right: 2px;
-              vertical-align: middle;
-            }
-            a[target="_blank"]):before { content: "↗"; }
-            a[target="_top"]):before { content: "↺"; }
           }
           ::slotted(span.yr) {
             font-weight: bold;
             color: green;
           }
+          ::slotted(a[target]) {
+            text-decoration: none;
+            font-weight: bold;
+          }
+          ::slotted(a[target]):before {
+            color: rgba(0, 0, 238, 0.7);
+            font-size: 1.1rem;
+            padding-right: 2px;
+            vertical-align: baseline;
+          }
+          ::slotted(a[target="_blank"]):before { content: "↗"; }
+          ::slotted(a[target="_top"]):before { content: "↺"; }
           ::slotted(a[target]):after {
             content: ' | ';
             color: #000;
