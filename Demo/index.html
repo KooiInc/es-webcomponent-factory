@@ -328,17 +328,19 @@
           <ul>
             <li>
               The counter will <b><i>not</i></b> work in Safari, because that browser
-              (quite stubbornly imho) will not support the
-              "extends" (<code>is="some-element"</code>)
-              syntax (aka <i>customized elements</i>). See the discussion <a
+              (quite stubbornly imho) will not support the "extends"
+              (<code>is="some-element"</code>) syntax (aka <i>customized elements</i>).
+              See the discussion <a
                 target="_blank"
-                href="https://github.com/WICG/webcomponents/issues/509#issuecomment-230700060>"
-              >@Github</a>.
+                href="https://github.com/WICG/webcomponents/issues/509#issuecomment-230700060"
+              >@Github</a> or this <a
+                target="_blank"
+                href="https://bugs.webkit.org/show_bug.cgi?id=182671">bug report</a>
             </li>
             <li>
               There are <a
                 target="_blank"
-                href="https://github.com/ungap/custom-elements">patches</a>
+                href="https://github.com/ungap/custom-elements">patches/polyfills</a>
               for this (Safari specific) customized elements problem.
               Either use the patch from the provided link, don't use Safari
               when you want to be able to use the "extends"
