@@ -47,7 +47,7 @@ function createComponents() {
             bottom: 0.5rem;
             right: 2rem;
             z-index: 2;
-            a {
+            a[target] {
               text-decoration: none;
               font-weight: bold;
             }
@@ -342,14 +342,6 @@ function addLogButtons() {
 function attrChange(elem, name, oldV, newV) {
   reporter.report(`[client] [${name}] for an instance of &lt;${elem.myName}> changed from ${
     oldV || `""`} to "${newV}"`);
-}
-
-function disconnector(elem) {
-  const instancesLeft = elem.getRootNode().querySelectorAll(elem.myName).length - 1;
-  const leftMsg = instancesLeft < 1
-    ? `No rendered instances left`
-    : `Rendered instances left: ${instancesLeft}`;
-  reporter.report(`[client] An instance of &lt;${elem.myName}> was removed. ${leftMsg}`);
 }
 
 function handleExpandingList(elem) {
