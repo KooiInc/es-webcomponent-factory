@@ -323,6 +323,31 @@
           (<code>&lt;div is="my-counter"></code>). Every instance
           uses a <i>shadow root</i> for styling and scripting its content.
         </div>
+        <div>
+          <b>Notes</b>
+          <ul>
+            <li>
+              The counter will <b><i>not</i></b> work in Safari, because that browser
+              (quite stubbornly imho) will not support the
+              "extends" (<code>is="some-element"</code>)
+              syntax (aka <i>customized elements</i>). See the discussion <a
+                target="_blank"
+                href="https://github.com/WICG/webcomponents/issues/509#issuecomment-230700060>"
+              >@Github</a>.
+            </li>
+            <li>
+              There are <a
+                target="_blank"
+                href="https://github.com/ungap/custom-elements">patches</a>
+              for this customized elements-problem.
+              Either use the patch from the provided link, just don't use Safari
+              when you want to be able to use the "extends"
+              syntax or restrict your web components to autonomous custom elements
+              if you need to support Safari.
+            </li>
+            <li>Hover a counter element to see the possible action for it</li>
+          </ul>
+        </div>
         <div>Here are two instances of <code>&lt;div is="my-counter"></code>.</div>
         <div is="my-counter"></div>
         <div is="my-counter"></div>
