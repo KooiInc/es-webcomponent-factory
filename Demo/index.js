@@ -127,9 +127,8 @@ function implement() {
     .append($(`#log2screen`))
     .prepend($(`<expandable-text data-from-template="log-header-notes">`));
   
-  // popup with small test in callback (not safari)
-  const cb = userAgent.includes("Safari") ? _ => {} : iWillBeBack;
-  $.Popup.show({content: `All done, enjoy`, closeAfter: 2, callback: cb});
+  // popup with small test in callback
+  $.Popup.show({content: `All done, enjoy`, closeAfter: 2, callback: iWillBeBack});
 }
 
 function expandableTextRenderer(elem) {
