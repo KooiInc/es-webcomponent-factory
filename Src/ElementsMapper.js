@@ -8,4 +8,4 @@ const tagMap = {};
       return elemTrial !== HTMLUnknownElement ? elemTrial : undefined; } });
 });
 
-export default tagMap;
+export default Object.freeze(tagMap);
