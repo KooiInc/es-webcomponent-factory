@@ -1,4 +1,4 @@
-import contractFactory from "//cdn.jsdelivr.net/gh/KooiInc/es-contract-fiddler@latest/es-contract.min.js";
+import contractFactory from "./es-contract.min.js";
 const { contracts, IS, tryJSON } = contractFactory({contractsPrefix: `[Web Component creator module]`});
 registerContracts();
 

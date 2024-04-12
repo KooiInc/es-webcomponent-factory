@@ -3,7 +3,7 @@ import {
   default as CreateComponent,
   reporter,
   createOrRetrieveShadowRoot,
-  setComponentStyleFor } from "../Src/WebComponentFactory.js";
+  setComponentStyleFor } from "../Bundle/WebComponentFactory.min.js";
 
 const { log: print } = logFactory();
 initialize();

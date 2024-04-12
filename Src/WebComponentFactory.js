@@ -1,5 +1,5 @@
 import {default as contracts, IS} from "./WebComponentContracts.js";
-import tagMap from "./CreateElementMappings.js";
+import tagMap from "./ElementsMapper.js";
 const reporter = reporterFactory();
 
 export {
