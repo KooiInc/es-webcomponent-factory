@@ -205,8 +205,9 @@
             </li>
             <li>A custom element instance can exist in html (see <i>index.html</i>). It will be
               rendered on creation within the script. <br>e.g. the MDN example replication is created
-              as <code class="block">CreateComponent( { <br>&nbsp;&nbsp;componentName: `expanding-list
-                <br>&nbsp;&nbsp;onConnect: function(node), <br>&nbsp;&nbsp;onDisconnect: disconnector,
+              as <code class="block">CreateComponent( {
+                <br>&nbsp;&nbsp;componentName: `expanding-list`,
+                <br>&nbsp;&nbsp;onConnect: expandingListRenderer,
                 <br>&nbsp;&nbsp;onAttrChange: { attributes: [`data-hithere`], method: attrChange }, }
                 ) {...}</code>
             </li>
