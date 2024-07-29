@@ -1,0 +1,1 @@
+./Bundle/WebComponentFactory.min.js
