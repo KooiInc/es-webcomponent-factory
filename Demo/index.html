@@ -214,7 +214,14 @@
             <li>
               A component can be instantiated by creating and appending it, e.g. <code class="block">CreateComponent({
               <br>&nbsp;&nbsp;componentName: 'my-counter' <br>&nbsp;&nbsp;onConnect:
-              myCounterRendererFunction,}); <br>&nbsp;&nbsp;document.body.append(document.createElement('my-counter'))</code>
+              myCounterRendererFunction,});
+              <br>&nbsp;&nbsp;document.body.append(document.createElement('my-counter'))</code>
+              <b>Note</b>: on connecting a custom element, the data-attribute <code>component-connected</code> is
+              added to it with value <b>1</b>. When a connected element is disconnected (e.g. when it is moved)
+              and <code>onDisconnect</code> is used this value is set to <b>0</b>. When the value is <b>1</b>,
+              <code>onConnect</code> will not run - this actually means that <code>onDisconnect</code>
+              is not really necessary unless you want to do special things to a disconnected custom
+              element.
             </li>
             <li>
               The module provides two custom methods and two custom properties for instances or within
