@@ -68,24 +68,20 @@ function initializeComponentLifecycle(Super, specs) {
   Super.observedAttributes = observedAttributes;
   Super.prototype = {
     connectedCallback: function() {
-      if (this.dataset.componentConnected === `1`) { return; }
-      
       let elem = this;
-      onConnect(elem);
-      elem.dataset.componentConnected = 1;
       !reporter.clientOnly &&
       reporter.report(`[factory] (Re)connected an instance of &lt;${elem.myName}>`);
+      return elem.shadowRoot?.isConnected ? true : onConnect(elem);
     },
     disconnectedCallback() {
       const elem = this;
       !reporter.clientOnly &&
       reporter.report(`[factory] Removed an instance of &lt;${elem.myName}>`);
-      onDisconnect(this);
-      elem.dataset.componentConnected = 0;
+      onDisconnect(elem);
     },
     adoptedCallback() { return onAdopted(this); },
     attributeChangedCallback(attributeName, oldValue, newValue) {
-      if (!observedAttributes.length) { return; }
+      if ( !observedAttributes.length ) { return; }
       if ( observedAttributes.find(attr => attr === attributeName) ) {
         attrChangedMethod(this, attributeName, oldValue, newValue);
       }
