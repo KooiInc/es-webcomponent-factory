@@ -204,6 +204,7 @@ function logDemoFactory(ascending) {
   return function(...args) {
     args[0] = `${now()} ${args[0]}`;
     print(...args);
+    
     if (!ascending) {
       [...Array(args.length)].forEach(_ => {
         const li = $(`#log2screen li:last-child`);

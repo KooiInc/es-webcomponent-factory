@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf8">
@@ -286,6 +286,23 @@
       <div class="fold">
         <div><b>Notes</b>
           <ul>
+            <li>
+              The <code>es-webcomponent-factory</code> module encapsulates
+              a mechanism (factory) for logging its actions named <code>reporter</code>.
+              By default it is <i>off</i>.
+              To use reporting import <code>reporter</code> from the module:
+              <br><code>import {(<span class="comment"
+                >..., ... </span>, <b>reporter</b>} from "[module location]"</code>.
+              <br>When it's switched <i>on</i>, by default it logs
+              to the console. You can create your own logging method (e.g. for printing
+              actions to screen) and attach it to the reporting factory.</li>
+            <li>
+              This demonstration uses a custom logger function. It is inititialized with
+              <code class="block">reporter.on();<br><span class="comment"></span
+                >reporter.report = logDemoFactory();</code>
+              If <code>report</code> is not assigned and reporter is on (<code>reporter.[on/off]()</code>
+              switches on/off), logging will occur within the developer console.
+            </li>
             <li>The logging is reversed (most recent entry first) by default.
               You can however toggle printing log entries descending
               or ascending using a button.
@@ -293,14 +310,8 @@
               The current choice is remembered over page reloads.
             </li>
             <li>
-              Because change and/or mutation listeners are not synchronous logging is probably/likely
-              <i>not</i> fully chronological.
-            </li>
-            <li>
-              Logging is inititialized with <code class="block"><span class="comment">[WebComponentFactory.]</span>reporter.on();
-              <br><span class="comment">[WebComponentFactory.]</span>reporter.report = logDemoFactory();</code>
-              If <code>report</code> is not assigned and reporter is on (<code>reporter.[on/off]()</code>
-              switches on/off), logging will occur within the developer console.
+              Because change and/or mutation listeners, are not synchronous logging may
+              <i>not</i> be fully chronological.
             </li>
             <li>
               You can toggle printing all (module and client) log entries or only
