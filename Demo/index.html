@@ -304,7 +304,7 @@
               switches on/off), logging will occur within the developer console.
             </li>
             <li>The logging is reversed (most recent entry first) by default.
-              You can however toggle printing log entries descending
+              In this demonstration you can however toggle printing log entries descending
               or ascending using a button.
               After clicking the button, the document  will be reloaded.
               The current choice is remembered over page reloads.
@@ -314,12 +314,13 @@
               <i>not</i> be fully chronological.
             </li>
             <li>
-              You can toggle printing all (module and client) log entries or only
+              In this demonstration you can toggle printing all (module and client) log entries or only
               log entries from the client script. After clicking  the button, the document
               will be reloaded. The current choice is remembered over page reloads.
             </li>
             <li>
-              Moving elements using DOM-methods (e.g. <code>append</code> or <code>appendChild</code>)
+              <b>Note</b>: moving custom elements using DOM-methods (e.g. <code>append</code> or <code
+                >appendChild</code>)
               means the moved element is rendered again (that's how the browser processes it). For
               custom elements that are moved (re-)rendering is thus logged as <i>Removed [...]</i> and
               <i>(Re)connected [...]</i> (when 'All log messages' is active).
