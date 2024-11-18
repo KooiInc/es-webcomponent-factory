@@ -1,4 +1,5 @@
 import {default as contracts, IS} from "./WebComponentContracts.js";
+//import {default as contracts, IS} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@main/index.browser.bundled.js";
 import tagMap from "./ElementsMapper.js";
 const reporter = reporterFactory();
 
