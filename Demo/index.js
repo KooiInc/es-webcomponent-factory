@@ -556,35 +556,3 @@ function getBGImages() {
     down: "data:image/png;base64,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"
   };
 }
-
-// function logFactory(formatJSON = true) {
-//   const logContainer = document.querySelector(`#log2screen`);
-//
-//   function logItem(top = false) {
-//     return content => {
-//       content = !IS(content, String, Number, Symbol)
-//         ? tryJSON(content, formatJSON) : String(content).trim();
-//       const isHead = content.startsWith(`!!`);
-//       content = isHead ? content.slice(2) : content;
-//
-//       logContainer.insertAdjacentHTML(
-//         top ? `afterbegin` : `beforeend`,
-//         `<li${isHead ? ` class="head"` : ``}>
-//            <div>${content}</div>
-//         </li>` );
-//     };
-//   }
-//   const [logLamda, logTopLambda] = [logItem(), logItem(true)];
-//
-//   return {
-//     log: (...txt) => txt.forEach( logLamda ),
-//     logTop: (...txt) => txt.forEach( logTopLambda ),
-//   };
-// }
-//
-// function tryJSON(content, formatted) {
-//   return maybe({
-//     trial() { return formatted ? `<pre>${JSON.stringify(content, null, 2)}</pre>` : JSON.stringify(content); },
-//     whenError() { return `${String(content)}`; }
-//   });
-// }
