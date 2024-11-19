@@ -104,6 +104,9 @@ function insertCopyright() {
 }
 
 function initialize() {
+  // add favicon
+  $.link_jql({rel: `icon`, href: `./KooiInc.png`}).appendTo($(`head`));
+  
   // preloaded web component styles
   templates.querySelectorAll(`[data-preload]`).forEach(el => document.body.append(el.content));
   
