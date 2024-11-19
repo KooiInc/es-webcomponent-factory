@@ -1,12 +1,20 @@
-import { logFactory, $ } from "./sbHelpers.bundled.js";
-
+import {
+  logFactory,
+  $
+} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@latest/index.browser.bundled.js";
 import {
   default as CreateComponent,
   reporter,
   createOrRetrieveShadowRoot,
-  setComponentStyleFor } from "../Src/WebComponentFactory.js";
+  setComponentStyleFor
+} from "../Src/WebComponentFactory.js";
 
-const { log: print } = logFactory();
+let templates = await fetch("./Demo-Templates.html")
+  .then(r => r.text())
+  .then(doc =>
+    Object.assign(document.createElement(`template`), {innerHTML: doc})
+      .content);
+const { log: print, logTop: printTop } = logFactory();
 initialize();
 
 function createComponents() {
@@ -89,27 +97,41 @@ function insertCopyright() {
   const ghLink = `<a slot="link" target="${isGithub ? `_top` : `_blank`}"
     href="https://github.com/KooiInc/es-webcomponent-factory">${isGithub ? `Back to ` : `@`}Github</a>`;
   document.body.insertAdjacentHTML(`afterbegin`,
-    `<copyright-slotted>
+    `<copyright-slotted>&copy;
         <span slot="year" class="yr">${new Date().getFullYear()}</span>
-        ${sbLink}${ghLink}
+        KooiInc ${sbLink} | ${ghLink}
     </copyright-slotted>`);
 }
 
 function initialize() {
+  // preloaded web component styles
+  templates.querySelectorAll(`[data-preload]`).forEach(el => document.body.append(el.content));
+  
+  // style demonstration page
   stylePage();
-  addLogButtons();
-  console.clear();
+  
+  // handle reportng
   reporter.on();
   reporter.clientOnly = !!(+localStorage.getItem(`clientOnly`));
   const logAscending = !!(+localStorage.getItem(`logAscending`));
   reporter.report = logDemoFactory(!!(+localStorage.getItem(`logAscending`)));
+  
+  // crete the web components
   createComponents();
   
+  // inject (handled) buttons for logging
+  addLogButtons();
 }
 
 function implement() {
+  // add stuff to the DOM
+  templates.querySelectorAll(`template:not([data-preload])`)
+    .forEach(template => document.body.prepend(template.content));
+  
+  templates = null;
+  
   // create .customContainer and move expanded-list elements to it
-  const customContainer = $(`<div class="customContainer">`, $(`#log2screen`), $.at.BeforeBegin)
+  const customContainer = $(`<div class="customContainer">`, $(`#log2screen`), $.at.before)
     .append($(`body > expandable-text`))
     .append($(`expanding-list`));
   
@@ -129,7 +151,7 @@ function implement() {
     .append($(`#log2screen`))
     .prepend($(`<expandable-text data-from-template="log-header-notes">`));
   
-  // popup with small test in callback
+  // popup with small test in callback (not safari)
   $.Popup.show({content: `All done, enjoy`, closeAfter: 2, callback: iWillBeBack});
 }
 
@@ -202,18 +224,10 @@ function expandingListRenderer(elem) {
 
 function logDemoFactory(ascending) {
   const { now } = reporter;
-  const firstLI = $(`#log2screen li:first-child`);
   
   return function(...args) {
     args[0] = `${now()} ${args[0]}`;
-    print(...args);
-    
-    if (!ascending) {
-      [...Array(args.length)].forEach(_ => {
-        const li = $(`#log2screen li:last-child`);
-        $(li, firstLI, $.at.AfterEnd);
-      });
-    }
+    return ascending ? print(...args) : printTop(...args);
   }
 }
 
@@ -288,6 +302,7 @@ function iWillBeBack() {
       <span style="color:red;font-weight:bold">I'll be back</span> ...
       <div>test element manipulation within (nested) shadow roots 'from the outside'</div>
       </span>`).first();
+  
   $.node(`expandable-text`).nth(3).shadowRoot
     .querySelector(`div[is]`).nth(2)
     .replaceWith(tmpElem);
@@ -300,25 +315,27 @@ function addLogButtons() {
     ascending: +(localStorage.getItem(`logAscending`) || 0), }
   const toggleState = current => !!!current;
   const title = `Note: reloads document`;
-  const logUl = $(`#log2screen`);
-  const bttns = $.virtual(`<li class="head logBttns" >
-    <button
-      data-logaction="logDirection"
-      data-logascending="${states.ascending}"
-      title="${title}"
-      >${states.ascending ? `Descending` : `Ascending`}
-    </button>
-    <button
-      data-logaction="clientOnly"
-      data-clientonly="${states.clientOnly}"
-      title="${title}"
-      >${!!states.clientOnly ? `All log messages` : `Client only log messages`}</button>
-    <button data-logaction="removeLine">Clear first log line</button>
-    <button data-logaction="removeAll">Clear log</button>`);
-  logUl.prepend(bttns);
+  $(`#log2screen`).beforeMe($(`
+    <div class="logBttns" >
+      <button
+        data-logaction="logDirection"
+        data-logascending="${states.ascending}"
+        title="${title}"
+        >${states.ascending ? `Descending` : `Ascending`}
+      </button>
+      <button
+        data-logaction="clientOnly"
+        data-clientonly="${states.clientOnly}"
+        title="${title}"
+        >${!!states.clientOnly ? `All log messages` : `Client only log messages`}</button>
+      <button data-logaction="removeLine">Clear first log line</button>
+      <button data-logaction="removeAll">Clear log</button>
+    </div>`)
+  );
   
   $.delegate(`click`, `[data-logaction]`, evt => {
     const origin = evt.target;
+    console.log(origin);
     
     if (origin.dataset.logaction === `removeAll`) {
       return $(`#log2screen`).find$(`li:not(.logBttns)`).remove();
@@ -461,6 +478,7 @@ function stylePage() {
     `table { display: inline-block; vertical-align: text-top; border-collapse: collapse; }`,
     `td, th { border: 1px solid #c0c0c0}; padding: 0 4px;`,
     `body { line-height: 1.4rem; }`,
+    `.logBttns { margin: 0.5rem 0 0 1.4rem; }`,
     `#log2screen li div, #log2screen li p,
      .customContainer div, .customContainer p {
       font-family: 'gill sans',
@@ -477,7 +495,8 @@ function stylePage() {
       color: #999;
     }`,
     `code { font-size: 0.9em; }`,
-    `code, div.local { font-family: roboto, monospace; }`,
+    `expandable-text { display: none; }`,
+    `div.local { font-family: roboto, monospace; }`,
     `.head div, .head p { font-weight: normal; padding-right: 2rem; }`,
     `.head h3 { margin-bottom: 0.3rem; }`,
     `div.q { display: inline-block;
@@ -495,11 +514,13 @@ function stylePage() {
       margin-top: 0.5rem;
      }`,
     `.center { text-align: center; }`,
-    `code.inline {
-      color: green;
-      background-color: #eee;
-      padding: 2px;
-      font-family: monospace;
+    `code, code.inline {
+      background-color: rgb(227, 230, 232);
+      color: rgb(12, 13, 14);
+      padding: 2px 4px;
+      display: inline;
+      border-radius: 4px;
+      margin: 1px 0;
     }`,
     `.testKey { font-family: "courier new"; color: green; font-weight: bold; }`,
     `.testKey.sub, .testKey.sub.error { display: block; }`,
@@ -540,12 +561,14 @@ function stylePage() {
     }`,
     `.customContainer { margin: 1rem auto;}`,
     `#log2screen li:last-child { padding-bottom: 2rem; }`,
+    `.visible { display: revert; }`,
   );
 }
 
 function unHide(elem) {
-  if (elem.style.display === `none`) {
-    elem.style.display = ``;
+  elem = $(elem);
+  if (!elem.is.visible) {
+    elem.addClass(`visible`);
   }
 }
 
