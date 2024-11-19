@@ -15,6 +15,7 @@ let templates = await fetch("./Demo-Templates.html")
     Object.assign(document.createElement(`template`), {innerHTML: doc})
       .content);
 const { log: print, logTop: printTop } = logFactory();
+
 initialize();
 
 function createComponents() {
@@ -50,12 +51,15 @@ function createComponents() {
         document.createElement("style"),
         { textContent: `
           :host {
-            color: #777;
-            display: block;
+            color: #555;
+            display: inline-block;
             position: fixed;
-            bottom: 0.5rem;
-            right: 2rem;
+            background-color: #DDD;
+            top: 0;
+            right: 0;
             z-index: 2;
+            border-radius: 4px;
+            padding: 0 0.3rem;
           }
           ::slotted(span.yr) {
             font-weight: bold;
@@ -108,7 +112,8 @@ function initialize() {
   $.link_jql({rel: `icon`, href: `./KooiInc.png`}).appendTo($(`head`));
   
   // preloaded web component styles
-  templates.querySelectorAll(`[data-preload]`).forEach(el => document.body.append(el.content));
+  templates.querySelectorAll(`[data-preload]`)
+    .forEach(el => document.body.append(el.content));
   
   // style demonstration page
   stylePage();
@@ -119,7 +124,7 @@ function initialize() {
   const logAscending = !!(+localStorage.getItem(`logAscending`));
   reporter.report = logDemoFactory(!!(+localStorage.getItem(`logAscending`)));
   
-  // crete the web components
+  // create the web components
   createComponents();
   
   // inject (handled) buttons for logging
@@ -159,7 +164,6 @@ function implement() {
 }
 
 function expandableTextRenderer(elem) {
-  unHide(elem);
   const templateId = elem.dataset.fromTemplate;
   const shadow = createOrRetrieveShadowRoot(elem);
   
@@ -206,7 +210,6 @@ function myCounterRenderer(elem) {
 }
 
 function expandingListRenderer(elem) {
-  unHide(elem);
   if (!elem.state.HandledAndStyled) {
     handleExpandingList(elem);
     styleExpandingListComponent(elem);
@@ -338,7 +341,6 @@ function addLogButtons() {
   
   $.delegate(`click`, `[data-logaction]`, evt => {
     const origin = evt.target;
-    console.log(origin);
     
     if (origin.dataset.logaction === `removeAll`) {
       return $(`#log2screen`).find$(`li:not(.logBttns)`).remove();
@@ -498,7 +500,6 @@ function stylePage() {
       color: #999;
     }`,
     `code { font-size: 0.9em; }`,
-    `expandable-text { display: none; }`,
     `div.local { font-family: roboto, monospace; }`,
     `.head div, .head p { font-weight: normal; padding-right: 2rem; }`,
     `.head h3 { margin-bottom: 0.3rem; }`,
@@ -566,13 +567,6 @@ function stylePage() {
     `#log2screen li:last-child { padding-bottom: 2rem; }`,
     `.visible { display: revert; }`,
   );
-}
-
-function unHide(elem) {
-  elem = $(elem);
-  if (!elem.is.visible) {
-    elem.addClass(`visible`);
-  }
 }
 
 function getBGImages() {
