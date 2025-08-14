@@ -1,7 +1,7 @@
 import {
   logFactory,
   $
-} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@latest/index.browser.bundled.js";
+} from "https://cdn.jsdelivr.net/gh/KooiInc/SBHelpers@latest/Bundle/htmlhelpers.min.js"
 import {
   default as CreateComponent,
   reporter,
@@ -109,7 +109,7 @@ function insertCopyright() {
 
 function initialize() {
   // add favicon
-  $.link_jql({rel: `icon`, href: `./KooiInc.png`}).appendTo($(`head`));
+  $.link({rel: `icon`, href: `./KooiInc.png`}).appendTo($(`head`));
   
   // preloaded web component styles
   templates.querySelectorAll(`[data-preload]`)
