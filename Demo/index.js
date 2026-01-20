@@ -339,7 +339,7 @@ function addLogButtons() {
     </div>`)
   );
   
-  $.delegate(`click`, `[data-logaction]`, evt => {
+  $.delegate(`click`, `[data-logaction]`, ({evt}) => {
     const origin = evt.target;
     
     if (origin.dataset.logaction === `removeAll`) {
@@ -370,7 +370,7 @@ function attrChange(elem, name, oldV, newV) {
 }
 
 function handleExpandingList(elem) {
-  const handler = evt => {
+  const handler = ({evt}) => {
     const next = evt.target.nextElementSibling;
     
     if (next.classList.contains(`hidden`)) {
